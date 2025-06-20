@@ -15,23 +15,37 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    //Menangani proses login pengguna
     public function login(Request $request)
     {
+        // Validate input
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required'
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+            'email.email' => 'Email tidak valid.'
         ]);
 
+        // Check if email exists
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'Email tidak terdaftar.'
+            ])->withInput();
+        }
+
+        // Attempt to login
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
             return $this->redirectBasedOnRole(Auth::user());
         }
 
+        // If login fails, it means password is incorrect
         return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ]);
+            'password' => 'Password salah.'
+        ])->withInput();
     }
 
     //Menampilkan form registrasi
