@@ -318,8 +318,7 @@
                                 <tr class="table-row-hover transition-all duration-200">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">
-                                            {{ $test->created_at->format('d F Y') }}</div>
-                                        <div class="text-sm text-gray-500">{{ $test->created_at->format('H:i') }} WITA
+                                            {{ $test->created_at->format('d F Y') }}
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">

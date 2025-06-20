@@ -271,17 +271,12 @@
             @yield('content')
         </main>
 
-        <!-- Footer -->
-        <footer class="bg-white py-4 px-6 border-t">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm text-gray-500">&copy; {{ date('Y') }} Admin Panel. All rights reserved.</p>
-                <div class="flex mt-2 md:mt-0 space-x-4">
-                    <a href="#" class="text-sm text-gray-500 hover:text-primary-600">Tentang</a>
-                    <a href="#" class="text-sm text-gray-500 hover:text-primary-600">Bantuan</a>
-                    <a href="#" class="text-sm text-gray-500 hover:text-primary-600">Kontak</a>
+            <!-- Footer -->
+            <footer class="bg-white py-4 px-6 md:ml-64 border-t">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-sm text-gray-500">&copy; {{ date('Y') }} Pengajar Panel. All rights reserved.</p>
                 </div>
-            </div>
-        </footer>
+            </footer>
     </div>
 
     <script>

@@ -84,8 +84,6 @@
                 <!-- Desktop login/dropdown -->
                 <div class="hidden md:flex items-center space-x-4">
                     @auth
-
-
                         <!-- Dropdown user -->
                         <div class="relative">
                             <button id="dropdownButton" class="font-semibold text-blue-600">
@@ -93,9 +91,14 @@
                             </button>
                             <div id="dropdownMenu"
                                 class="absolute hidden bg-white shadow-md mt-2 right-0 min-w-[150px] rounded-lg overflow-visible">
-                                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'pengajar')
-                                    <a href="{{ route('admin.dashboard') }}"
-                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                @if (auth()->check())
+                                    @if (auth()->user()->role === 'admin')
+                                        <a href="{{ route('admin.dashboard') }}"
+                                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                    @elseif (auth()->user()->role === 'pengajar')
+                                        <a href="{{ route('pengajar.kelas.index') }}"
+                                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                    @endif
                                 @endif
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
@@ -141,10 +144,14 @@
                                 {{ auth()->user()->name }}
                             </button>
                             <div id="mobileDropdownMenu" class="hidden bg-gray-50 mt-2 p-2 rounded-lg">
-
-                                @if (auth()->user()->role === 'admin' || auth()->user()->role === 'pengajar')
-                                    <a href="{{ route('admin.dashboard') }}"
-                                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                @if (auth()->check())
+                                    @if (auth()->user()->role === 'admin')
+                                        <a href="{{ route('admin.dashboard') }}"
+                                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                    @elseif (auth()->user()->role === 'pengajar')
+                                        <a href="{{ route('pengajar.kelas.index') }}"
+                                            class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Dashboard</a>
+                                    @endif
                                 @endif
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf

@@ -25,7 +25,8 @@
     <div class="w-full md:w-1/2 p-12 flex flex-col justify-center bg-white rounded-r-2xl">
         <h2 class="text-2xl font-semibold text-gray-800 mb-2">Login</h2>
         <h3 class="text-xs font-light text-gray-800 mb-6">Silahkan masukan email dan password anda untuk Login!</h3>
-        
+
+
         <form method="POST" action="{{ route('login') }}" id="loginForm" class="space-y-6" novalidate>
             @csrf
             <div>
@@ -138,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
 
 </body>
 </html>

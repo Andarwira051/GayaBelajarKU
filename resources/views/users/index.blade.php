@@ -16,7 +16,7 @@
     <!-- Stats Summary -->
 
 
-    <!-- Search & Filter Bar -->
+    {{-- <!-- Search & Filter Bar -->
     <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col md:flex-row gap-4">
         <div class="relative flex-grow">
             <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"></i>
@@ -33,7 +33,7 @@
                 <i data-lucide="filter" class="w-5 h-5"></i>
             </button>
         </div>
-    </div>
+    </div> --}}
 
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
@@ -69,10 +69,10 @@
                             </td>
                             <td class="p-4 whitespace-nowrap text-sm">
                                 <div class="flex space-x-2">
-                                    <button type="button" class="text-blue-600 hover:text-blue-900 flex items-center bg-blue-50 p-1 rounded-lg hover:bg-blue-100 edit-btn" 
-                                        data-id="{{ $user->id }}" 
-                                        data-name="{{ $user->name }}" 
-                                        data-email="{{ $user->email }}" 
+                                    <button type="button" class="text-blue-600 hover:text-blue-900 flex items-center bg-blue-50 p-1 rounded-lg hover:bg-blue-100 edit-btn"
+                                        data-id="{{ $user->id }}"
+                                        data-name="{{ $user->name }}"
+                                        data-email="{{ $user->email }}"
                                         data-role="{{ $user->role }}">
                                         <i data-lucide="edit" class="w-4 h-4"></i>
                                     </button>
@@ -110,9 +110,9 @@
                         </div>
                         <div class="flex justify-end space-x-2 pt-2 border-t border-gray-100 mt-2">
                             <button type="button" class="text-blue-600 hover:text-blue-900 flex items-center px-3 py-1 bg-blue-50 rounded-lg hover:bg-blue-100 edit-btn"
-                                data-id="{{ $user->id }}" 
-                                data-name="{{ $user->name }}" 
-                                data-email="{{ $user->email }}" 
+                                data-id="{{ $user->id }}"
+                                data-name="{{ $user->name }}"
+                                data-email="{{ $user->email }}"
                                 data-role="{{ $user->role }}">
                                 <i data-lucide="edit" class="w-4 h-4 mr-1"></i> Edit
                             </button>
@@ -177,7 +177,7 @@
                 <div>
                     <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
                     <select name="role" id="role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <option value="user">User</option>
+                        <option value="user">   </option>
                         <option value="admin">Admin</option>
                         <option value="pengajar">Pengajar</option>
                     </select>
@@ -250,79 +250,79 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         lucide.createIcons();
-        
+
         // Add Modal functionality
         const addModal = document.getElementById('addUserModal');
         const openAddModalBtn = document.getElementById('openAddUserModal');
         const closeAddModalBtn = document.getElementById('closeAddUserModal');
         const cancelAddBtn = document.getElementById('cancelAddUser');
-        
+
         openAddModalBtn.addEventListener('click', function() {
             addModal.classList.remove('hidden');
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
         });
-        
+
         const closeAddModal = function() {
             addModal.classList.add('hidden');
             document.body.style.overflow = 'auto'; // Re-enable scrolling
         };
-        
+
         closeAddModalBtn.addEventListener('click', closeAddModal);
         cancelAddBtn.addEventListener('click', closeAddModal);
-        
+
         // Close modal when clicking outside
         addModal.addEventListener('click', function(e) {
             if (e.target === addModal) {
                 closeAddModal();
             }
         });
-        
+
         // Edit Modal functionality
         const editModal = document.getElementById('editUserModal');
         const closeEditModalBtn = document.getElementById('closeEditUserModal');
         const cancelEditBtn = document.getElementById('cancelEditUser');
         const editForm = document.getElementById('editUserForm');
-        
+
         document.querySelectorAll(".edit-btn").forEach(button => {
             button.addEventListener("click", function() {
                 const userId = this.getAttribute("data-id");
                 const userName = this.getAttribute("data-name");
                 const userEmail = this.getAttribute("data-email");
                 const userRole = this.getAttribute("data-role");
-                
+
                 // Set form action
                 editForm.action = `/users/${userId}`;
-                
+
                 // Fill form fields
                 document.getElementById('edit_name').value = userName;
                 document.getElementById('edit_email').value = userEmail;
                 document.getElementById('edit_role').value = userRole;
-                
+
                 // Clear password fields
                 document.getElementById('edit_password').value = '';
                 document.getElementById('edit_password_confirmation').value = '';
-                
+
                 // Show modal
                 editModal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
             });
         });
-        
+
         const closeEditModal = function() {
             editModal.classList.add('hidden');
             document.body.style.overflow = 'auto';
         };
-        
+
         closeEditModalBtn.addEventListener('click', closeEditModal);
         cancelEditBtn.addEventListener('click', closeEditModal);
-        
+
         // Close modal when clicking outside
         editModal.addEventListener('click', function(e) {
             if (e.target === editModal) {
                 closeEditModal();
             }
         });
-        
+
         // Delete user functionality
         document.querySelectorAll(".delete-btn").forEach(button => {
             button.addEventListener("click", function () {

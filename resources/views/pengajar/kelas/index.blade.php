@@ -25,7 +25,7 @@
             </div>
         @endif
 
-        <!-- Search & Filter Bar -->
+        {{-- <!-- Search & Filter Bar -->
         <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col md:flex-row gap-4">
             <form method="GET" action="{{ route('pengajar.kelas.index') }}"
                 class="relative flex-grow flex flex-col md:flex-row gap-4 w-full">
@@ -42,7 +42,7 @@
                     </button>
                 </div>
             </form>
-        </div>
+        </div> --}}
 
 
         <!-- Daftar Kelas -->
@@ -255,15 +255,6 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
-
-    <!-- Toast untuk copy token -->
-    <div id="toast"
-        class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
-        <div class="flex items-center">
-            <i data-lucide="check" class="w-4 h-4 mr-2"></i>
-            <span>Token berhasil disalin!</span>
         </div>
     </div>
 

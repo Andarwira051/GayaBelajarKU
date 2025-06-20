@@ -56,13 +56,11 @@
             </div>
         </div>
 
-        <!-- Main result box -->
-        <div
-            class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-1 mb-8 shadow-lg transform transition-all duration-300 hover:scale-[1.01]">
+  <!-- Main result box -->
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-1 mb-8 shadow-lg transform transition-all duration-300 hover:scale-[1.01]">
             <div class="bg-white rounded-lg p-6">
                 <div class="text-center py-4">
-                    <div class="text-sm uppercase tracking-wider text-gray-500 font-medium mb-1">Gaya Belajar Dominan
-                    </div>
+                    <div class="text-sm uppercase tracking-wider text-gray-500 font-medium mb-1">Gaya Belajar Dominan</div>
                     <p id="predictedStyle" class="text-3xl font-bold text-blue-600">{{ $test->prediction }}</p>
                 </div>
             </div>
@@ -74,8 +72,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Visual -->
                 <div id="visual-box" class="rounded-xl p-4 flex flex-col items-center card-hover">
-                    <div id="visual-circle"
-                        class="w-32 h-32 flex items-center justify-center rounded-full border-4 shadow-lg mb-2 circle-animation">
+                    <div id="visual-circle" class="w-32 h-32 flex items-center justify-center rounded-full border-4 shadow-lg mb-2 circle-animation">
                         <div class="flex flex-col items-center">
                             <span id="visual-percentage" class="text-2xl font-bold">{{ $visualPercentage }}%</span>
                         </div>
@@ -91,15 +88,14 @@
 
                 <!-- Auditory -->
                 <div id="auditory-box" class="rounded-xl p-4 flex flex-col items-center card-hover">
-                    <div id="auditory-circle"
-                        class="w-32 h-32 flex items-center justify-center rounded-full border-4 shadow-lg mb-2 circle-animation">
+                    <div id="auditory-circle" class="w-32 h-32 flex items-center justify-center rounded-full border-4 shadow-lg mb-2 circle-animation">
                         <div class="flex flex-col items-center">
                             <span id="auditory-percentage" class="text-2xl font-bold">{{ $auditoryPercentage }}%</span>
                         </div>
                     </div>
                     <div class="mt-3 text-center">
                         <div class="p-2 rounded-full bg-blue-100 inline-block mb-2">
-                            <i id="auditory-icon" class="fas fa-ear-listen text-xl"></i>
+                            <i id="auditory-icon" class="fas fa-headphones text-xl"></i>
                         </div>
                         <h4 class="font-semibold">Auditori</h4>
                         <p class="text-sm text-gray-600">{{ $test->auditory_score }} poin</p>
@@ -108,11 +104,9 @@
 
                 <!-- Kinesthetic -->
                 <div id="kinesthetic-box" class="rounded-xl p-4 flex flex-col items-center card-hover">
-                    <div id="kinesthetic-circle"
-                        class="w-32 h-32 flex items-center justify-center rounded-full border-4 shadow-lg mb-2 circle-animation">
+                    <div id="kinesthetic-circle" class="w-32 h-32 flex items-center justify-center rounded-full border-4 shadow-lg mb-2 circle-animation">
                         <div class="flex flex-col items-center">
-                            <span id="kinesthetic-percentage"
-                                class="text-2xl font-bold">{{ $kinestheticPercentage }}%</span>
+                            <span id="kinesthetic-percentage" class="text-2xl font-bold">{{ $kinestheticPercentage }}%</span>
                         </div>
                     </div>
                     <div class="mt-3 text-center">
@@ -145,8 +139,7 @@
             </div>
             <ul id="recommendationsList" class="space-y-3 text-gray-600">
                 <li class="flex items-start">
-                    <span
-                        class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-500 mr-2 mt-0.5">
+                    <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-500 mr-2 mt-0.5">
                         <i class="fas fa-spinner fa-spin text-xs"></i>
                     </span>
                     <span>Memuat rekomendasi...</span>
@@ -171,12 +164,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Ambil nilai gaya belajar dominan dari #predictedStyle
             var predictedStyle = document.getElementById('predictedStyle').textContent.trim();
-
-            console.log("Gaya belajar terdeteksi:", predictedStyle); // Debug untuk melihat nilai yang terdeteksi
+            console.log("Raw predictedStyle:", predictedStyle); // Debugging
 
             // Tentukan gaya belajar yang aktif
             var activeStyles = determineActiveStyles(predictedStyle);
-            console.log("Gaya belajar aktif:", activeStyles);
+            console.log("Processed activeStyles:", activeStyles); // Debugging
 
             // Definisikan objek konfigurasi gaya belajar
             const styleConfigs = {
@@ -193,7 +185,7 @@
                     ]
                 },
                 "Auditori": {
-                    icon: "fa-ear-listen",
+                    icon: "fa-headphones",
                     color: "blue",
                     description: "Anda belajar lebih baik melalui mendengar dan diskusi. Informasi yang disampaikan secara lisan akan lebih mudah dipahami dan diingat.",
                     recommendations: [
@@ -234,6 +226,20 @@
                 }
             };
 
+            // Validasi dan fallback berdasarkan skor
+            if (!activeStyles.some(style => ['Visual', 'Auditori', 'Kinestetik'].includes(style))) {
+                console.log("Invalid prediction, falling back to scores");
+                const visualScore = parseInt('{{ $test->visual_score }}') || 0;
+                const auditoryScore = parseInt('{{ $test->auditory_score }}') || 0;
+                const kinestheticScore = parseInt('{{ $test->kinesthetic_score }}') || 0;
+                const maxScore = Math.max(visualScore, auditoryScore, kinestheticScore);
+                let fallbackStyle = 'Visual';
+                if (auditoryScore === maxScore) fallbackStyle = 'Auditori';
+                else if (kinestheticScore === maxScore) fallbackStyle = 'Kinestetik';
+                activeStyles = [fallbackStyle];
+                console.log("Fallback activeStyles:", activeStyles);
+            }
+
             // Setup warna dan tampilan berdasarkan gaya belajar dominan
             setupLearningStyleBoxes(activeStyles);
 
@@ -243,104 +249,127 @@
 
         // Fungsi untuk menentukan gaya belajar yang aktif dari prediksi
         function determineActiveStyles(prediction) {
-            // Jika prediksi adalah gaya tunggal, kembalikan sebagai array dengan satu elemen
-            if (prediction === 'Visual' || prediction === 'Auditori' || prediction === 'Kinestetik') {
-                return [prediction];
+            console.log("Input prediction:", prediction);
+
+            const normalizedPrediction = prediction.trim().toLowerCase();
+
+            // Mapping yang lebih lengkap
+            const styleMapping = {
+                'visual': 'Visual',
+                'auditori': 'Auditori',
+                'auditory': 'Auditori',
+                'auditor': 'Auditori',
+                'kinestetik': 'Kinestetik',
+                'kinesthetic': 'Kinestetik'
+            };
+
+            // Cek gaya tunggal
+            if (styleMapping[normalizedPrediction]) {
+                console.log("Detected single style:", [styleMapping[normalizedPrediction]]);
+                return [styleMapping[normalizedPrediction]];
             }
 
-            // Jika prediksi berisi "-", berarti ini adalah kombinasi
-            if (prediction.includes('-')) {
-                return prediction.split('-');
-            }
-
-            // Jika prediksi berisi "dan", coba parsing lebih lanjut
-            if (prediction.includes(' dan ')) {
-                const styles = [];
-                if (prediction.includes('Visual')) styles.push('Visual');
-                if (prediction.includes('Auditori')) styles.push('Auditori');
-                if (prediction.includes('Kinestetik')) styles.push('Kinestetik');
+            // Cek format dengan tanda "-"
+            if (normalizedPrediction.includes('-')) {
+                const styles = normalizedPrediction.split('-').map(style => {
+                    const trimmed = style.trim().toLowerCase();
+                    return styleMapping[trimmed] || trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+                });
+                console.log("Detected combination with dash:", styles);
                 return styles;
             }
 
-            // Jika format prediksi tidak dikenal, kembalikan sebagai array tunggal
-            return [prediction];
+            // Cek format dengan "dan"
+            if (normalizedPrediction.includes(' dan ')) {
+                const styles = [];
+                if (normalizedPrediction.includes('visual')) styles.push('Visual');
+                if (normalizedPrediction.includes('auditori') || normalizedPrediction.includes('auditory') || normalizedPrediction.includes('auditor')) styles.push('Auditori');
+                if (normalizedPrediction.includes('kinestetik') || normalizedPrediction.includes('kinesthetic')) styles.push('Kinestetik');
+                console.log("Detected combination with 'dan':", styles);
+                return styles;
+            }
+
+            // Fallback: Kapitalisasi pertama
+            const capitalized = normalizedPrediction.charAt(0).toUpperCase() + normalizedPrediction.slice(1);
+            if (['Visual', 'Auditori', 'Kinestetik'].includes(capitalized)) {
+                console.log("Capitalized match:", [capitalized]);
+                return [capitalized];
+            }
+
+            console.log("Unknown format, returning as single:", [capitalized]);
+            return [capitalized];
         }
 
         // Fungsi untuk mengatur warna dan tampilan kotak gaya belajar
         function setupLearningStyleBoxes(activeStyles) {
-            // Elemen visual
+            console.log("Setting up boxes for styles:", activeStyles);
+
             const visualBox = document.getElementById('visual-box');
             const visualCircle = document.getElementById('visual-circle');
             const visualPercentage = document.getElementById('visual-percentage');
             const visualIcon = document.getElementById('visual-icon');
 
-            // Elemen auditory
             const auditoryBox = document.getElementById('auditory-box');
             const auditoryCircle = document.getElementById('auditory-circle');
             const auditoryPercentage = document.getElementById('auditory-percentage');
             const auditoryIcon = document.getElementById('auditory-icon');
 
-            // Elemen kinesthetic
             const kinestheticBox = document.getElementById('kinesthetic-box');
             const kinestheticCircle = document.getElementById('kinesthetic-circle');
             const kinestheticPercentage = document.getElementById('kinesthetic-percentage');
             const kinestheticIcon = document.getElementById('kinesthetic-icon');
 
-            // Reset semua ke warna abu-abu (default) dengan opacity rendah
-            visualBox.className =
-                "rounded-xl p-4 flex flex-col items-center bg-gray-100 opacity-50 transition-all duration-300 card-hover";
-            visualCircle.className =
-                "w-32 h-32 flex items-center justify-center rounded-full border-4 border-gray-300 shadow-md transition-all duration-300 circle-animation";
+            // Reset ke default
+            visualBox.className = "rounded-xl p-4 flex flex-col items-center bg-gray-100 opacity-50 transition-all duration-300 card-hover";
+            visualCircle.className = "w-32 h-32 flex items-center justify-center rounded-full border-4 border-gray-300 shadow-md transition-all duration-300 circle-animation";
             visualPercentage.className = "text-2xl font-bold text-gray-400";
             visualIcon.className = "fas fa-eye text-gray-400";
 
-            auditoryBox.className =
-                "rounded-xl p-4 flex flex-col items-center bg-gray-100 opacity-50 transition-all duration-300 card-hover";
-            auditoryCircle.className =
-                "w-32 h-32 flex items-center justify-center rounded-full border-4 border-gray-300 shadow-md transition-all duration-300 circle-animation";
+            auditoryBox.className = "rounded-xl p-4 flex flex-col items-center bg-gray-100 opacity-50 transition-all duration-300 card-hover";
+            auditoryCircle.className = "w-32 h-32 flex items-center justify-center rounded-full border-4 border-gray-300 shadow-md transition-all duration-300 circle-animation";
             auditoryPercentage.className = "text-2xl font-bold text-gray-400";
-            auditoryIcon.className = "fas fa-ear-listen text-gray-400";
+            auditoryIcon.className = "fas fa-headphones text-gray-400";
 
-            kinestheticBox.className =
-                "rounded-xl p-4 flex flex-col items-center bg-gray-100 opacity-50 transition-all duration-300 card-hover";
-            kinestheticCircle.className =
-                "w-32 h-32 flex items-center justify-center rounded-full border-4 border-gray-300 shadow-md transition-all duration-300 circle-animation";
+            kinestheticBox.className = "rounded-xl p-4 flex flex-col items-center bg-gray-100 opacity-50 transition-all duration-300 card-hover";
+            kinestheticCircle.className = "w-32 h-32 flex items-center justify-center rounded-full border-4 border-gray-300 shadow-md transition-all duration-300 circle-animation";
             kinestheticPercentage.className = "text-2xl font-bold text-gray-400";
             kinestheticIcon.className = "fas fa-person-walking text-gray-400";
 
-            console.log("Mengatur tampilan untuk gaya belajar:", activeStyles); // Debug
+            // Aktifkan kotak berdasarkan gaya belajar
+            activeStyles.forEach(style => {
+                console.log("Processing style in setup:", style);
+                const normalizedStyle = style.toLowerCase();
 
-            // Set warna biru untuk gaya belajar aktif
-            if (activeStyles.includes('Visual')) {
-                visualBox.className =
-                    "rounded-xl p-4 flex flex-col items-center bg-blue-50 opacity-100 transition-all duration-300 transform card-hover";
-                visualCircle.className =
-                    "w-32 h-32 flex items-center justify-center rounded-full border-4 border-blue-500 shadow-lg transition-all duration-300 circle-animation";
-                visualPercentage.className = "text-2xl font-bold text-blue-600";
-                visualIcon.className = "fas fa-eye text-blue-600";
-            }
+                if (normalizedStyle === 'visual') {
+                    console.log("Activating Visual style");
+                    visualBox.className = "rounded-xl p-4 flex flex-col items-center bg-blue-50 opacity-100 transition-all duration-300 transform card-hover";
+                    visualCircle.className = "w-32 h-32 flex items-center justify-center rounded-full border-4 border-blue-500 shadow-lg transition-all duration-300 circle-animation";
+                    visualPercentage.className = "text-2xl font-bold text-blue-600";
+                    visualIcon.className = "fas fa-eye text-blue-600";
+                }
 
-            if (activeStyles.includes('Auditori')) {
-                auditoryBox.className =
-                    "rounded-xl p-4 flex flex-col items-center bg-blue-50 opacity-100 transition-all duration-300 transform card-hover";
-                auditoryCircle.className =
-                    "w-32 h-32 flex items-center justify-center rounded-full border-4 border-blue-500 shadow-lg transition-all duration-300 circle-animation";
-                auditoryPercentage.className = "text-2xl font-bold text-blue-600";
-                auditoryIcon.className = "fas fa-ear-listen text-blue-600";
-            }
+                if (normalizedStyle === 'auditori' || normalizedStyle === 'auditory' || normalizedStyle === 'auditor') {
+                    console.log("Activating Auditori style");
+                    auditoryBox.className = "rounded-xl p-4 flex flex-col items-center bg-blue-50 opacity-100 transition-all duration-300 transform card-hover";
+                    auditoryCircle.className = "w-32 h-32 flex items-center justify-center rounded-full border-4 border-blue-500 shadow-lg transition-all duration-300 circle-animation";
+                    auditoryPercentage.className = "text-2xl font-bold text-blue-600";
+                    auditoryIcon.className = "fas fa-headphones text-blue-600";
+                }
 
-            if (activeStyles.includes('Kinestetik')) {
-                kinestheticBox.className =
-                    "rounded-xl p-4 flex flex-col items-center bg-blue-50 opacity-100 transition-all duration-300 transform card-hover";
-                kinestheticCircle.className =
-                    "w-32 h-32 flex items-center justify-center rounded-full border-4 border-blue-500 shadow-lg transition-all duration-300 circle-animation";
-                kinestheticPercentage.className = "text-2xl font-bold text-blue-600";
-                kinestheticIcon.className = "fas fa-person-walking text-blue-600";
-            }
+                if (normalizedStyle === 'kinestetik' || normalizedStyle === 'kinesthetic') {
+                    console.log("Activating Kinestetik style");
+                    kinestheticBox.className = "rounded-xl p-4 flex flex-col items-center bg-blue-50 opacity-100 transition-all duration-300 transform card-hover";
+                    kinestheticCircle.className = "w-32 h-32 flex items-center justify-center rounded-full border-4 border-blue-500 shadow-lg transition-all duration-300 circle-animation";
+                    kinestheticPercentage.className = "text-2xl font-bold text-blue-600";
+                    kinestheticIcon.className = "fas fa-person-walking text-blue-600";
+                }
+            });
         }
 
         // Fungsi untuk menampilkan deskripsi dan rekomendasi
         function displayDescriptionAndRecommendations(activeStyles, styleConfigs, combinedConfigs) {
+            console.log("Displaying description and recommendations for:", activeStyles);
+
             const descriptionEl = document.getElementById('descriptionText');
             const recommendationsEl = document.getElementById('recommendationsList');
 
@@ -360,6 +389,8 @@
                 const styleName = activeStyles[0];
                 const config = styleConfigs[styleName];
 
+                console.log("Processing single style:", styleName, "Config found:", !!config);
+
                 if (config) {
                     // Tambahkan deskripsi
                     const paragraph = document.createElement('p');
@@ -368,15 +399,15 @@
                     descriptionEl.appendChild(paragraph);
 
                     // Tampilkan rekomendasi
-                    config.recommendations.forEach(function(recommendation) {
+                    config.recommendations.forEach(function(recommendation, index) {
+                        console.log("Adding recommendation", index + 1, ":", recommendation);
                         const listItem = document.createElement('li');
                         listItem.classList.add('flex', 'items-start', 'mb-3', 'bg-white', 'p-3', 'rounded-lg',
                             'shadow-sm', 'border', 'border-gray-100', 'transition-all', 'duration-200',
                             'hover:shadow-md');
 
                         const iconWrapper = document.createElement('span');
-                        iconWrapper.className =
-                            "inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-600 mr-3 mt-0.5";
+                        iconWrapper.className = "inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-600 mr-3 mt-0.5";
 
                         const icon = document.createElement('i');
                         icon.classList.add('fas', config.icon, 'text-xs');
@@ -390,14 +421,20 @@
                         listItem.appendChild(text);
                         recommendationsEl.appendChild(listItem);
                     });
+                } else {
+                    console.log("No config found for style:", styleName);
+                    const paragraph = document.createElement('p');
+                    paragraph.className = "text-gray-600 leading-relaxed";
+                    paragraph.textContent = `Gaya belajar "${styleName}" tidak dikenali. Silakan konsultasikan dengan pengajar untuk strategi belajar yang sesuai.`;
+                    descriptionEl.appendChild(paragraph);
                 }
             }
             // Kasus untuk gaya belajar campuran
             else {
-                // Buat kunci untuk mencari di combinedConfigs
+                console.log("Processing multiple styles:", activeStyles);
                 const combinedKey = activeStyles.sort().join('-');
+                console.log("Combined key:", combinedKey);
 
-                // Tampilkan deskripsi gabungan
                 const paragraph = document.createElement('p');
                 paragraph.className = "text-gray-600 leading-relaxed";
 
@@ -410,13 +447,9 @@
 
                 descriptionEl.appendChild(paragraph);
 
-                // Tampilkan rekomendasi gabungan dari semua gaya belajar aktif
                 let allRecommendations = [];
-
-                // Kumpulkan semua rekomendasi dari gaya belajar aktif
                 activeStyles.forEach(function(style) {
                     if (styleConfigs[style] && styleConfigs[style].recommendations) {
-                        // Pilih 2-3 rekomendasi dari setiap gaya untuk menghindari terlalu banyak
                         const selectedRecs = styleConfigs[style].recommendations.slice(0, 3);
                         selectedRecs.forEach(function(rec) {
                             allRecommendations.push({
@@ -429,7 +462,6 @@
                     }
                 });
 
-                // Tampilkan rekomendasi gabungan
                 allRecommendations.forEach(function(rec) {
                     const listItem = document.createElement('li');
                     listItem.classList.add('flex', 'items-start', 'mb-3', 'bg-white', 'p-3', 'rounded-lg',
@@ -437,15 +469,13 @@
                         'hover:shadow-md');
 
                     const iconWrapper = document.createElement('span');
-                    iconWrapper.className =
-                        "inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-600 mr-3 mt-0.5";
+                    iconWrapper.className = "inline-flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 text-blue-600 mr-3 mt-0.5";
 
                     const icon = document.createElement('i');
                     icon.classList.add('fas', rec.icon, 'text-xs');
 
                     const text = document.createElement('span');
-                    text.innerHTML =
-                        `<span class="text-gray-700">${rec.text}</span> <span class="text-xs text-blue-500 ml-1"></span>`;
+                    text.innerHTML = `<span class="text-gray-700">${rec.text}</span> <span class="text-xs text-blue-500 ml-1"></span>`;
 
                     iconWrapper.appendChild(icon);
                     listItem.appendChild(iconWrapper);
