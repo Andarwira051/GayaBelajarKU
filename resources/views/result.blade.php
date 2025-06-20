@@ -148,10 +148,10 @@
         </div>
 
         <div class="flex justify-center flex-wrap gap-4">
-            <a href="{{ route('export.pdf', ['id' => $test->id, 'prediction' => $test->prediction]) }}"
+            {{-- <a href="{{ route('export.pdf', ['id' => $test->id, 'prediction' => $test->prediction]) }}"
                 class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium py-3 px-6 rounded-lg transition-all shadow-md flex items-center">
                 <i class="fas fa-file-pdf mr-2"></i> Export PDF
-            </a>
+            </a> --}}
 
             <a href="/"
                 class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all shadow-md flex items-center">
